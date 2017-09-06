@@ -1,0 +1,41 @@
+#!/bin/bash
+# chkconfig: 2345 95 1
+# description: Reminder
+# processname: AppointmentReminder
+# Source function library
+. /etc/init.d/functions
+
+DAEMON_USER=root
+DAEMON_APP_NAME=appointmentreminder
+DAEMON_APP=AppointmentReminder_app.py
+DAEMON_APP_PATH=/home/matthassel/AppointmentReminder
+DAEMONIZE=$DAEMON_APP_PATH/$DAEMON_APP
+DAEMON_RUNNER=/usr/bin/python
+
+case "$1" in
+
+  start)
+        echo "Starting $DAEMON_APP_NAME"
+        daemon $DAEMONIZE &
+        ;;
+  stop)
+        echo "Stopping $DAEMON_APP_NAME" 
+        #PID=`ps -ef | grep $DAEMON_APP | grep -v grep | grep -v '/bin/bash' | awk '{print $2}'`
+        #kill -9 $PID 
+        killproc $DAEMONIZE
+        ;;
+
+  restart|force-reload)
+        echo "Restarting $DAEMON_APP_NAME"
+        #PID=`ps -ef | grep $DAEMON_APP | grep -v grep | awk '{print $2}'`
+        #kill -9 $PID 
+        killproc $DAEMONIZE
+        sleep 1 
+        daemon $DAEMONIZE &
+        ;;
+  *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
